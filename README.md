@@ -1,9 +1,21 @@
 # Artificial Intelligence
 
 ## Table of Content
+- [Aulas](#aulas)
 - [Course Info](#course-info)
 - [Course Plan](#course-plan)
 - [Projeto](#projeto)
+
+
+## Aulas
+
+### Aula 1
+
+Introdução aos conceitos de IA.
+
+### Aula 2
+
+- Nas funções gulosas, verificar o que é o f(x) e o g(x) (estimativa vs real) -> não lembro se é respectivamente, mas dá para 
 
 
 
