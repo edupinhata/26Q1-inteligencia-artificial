@@ -61,29 +61,36 @@ Introdução aos conceitos de IA.
 
 # Projeto
 
+## Entregas:
+
+- [Título e Resumo](https://github.com/edupinhata/26Q1-inteligencia-artificial/blob/main/project/InteligenciaArtificial_contextualBandits.pdf)
+
+
+## Descrição
+
 O Projeto poderá ser realizado em grupos de até três alunos.
 
 Escolher um artigo que aplique uma técnica de Inteligência Artificial. O artigo escolhido deverá ter sido publicado no ano 2000 (ou mais recente) e deve ter sido citado pelo menos 5 vezes por outras referências. Além disso, deverá ser um artigo que não tenha disponibilizado código-fonte dos experimentos e que nenhum dos membros do grupo seja autor do artigo.
 
 
-## No projeto, o grupo deverá:
+### No projeto, o grupo deverá:
 
 - reimplementar a técnica/aplicação de Inteligência Artificial (IA) apresentada no artigo original;
 - propor uma modificação na técnica de IA (ou aplicação de outra técnica de IA) e realizar um comparativo da versão original do artigo com a nova proposta.
 
-## Deverá ser entregue:
+### Deverá ser entregue:
 
 - Artigo escrito pelo grupo contendo: Introdução, Fundamentação teórica/Trabalhos relacionados, Proposta, Metodologia experimental, Resultados e discussão, Conclusão, Referências; O artigo deverá seguir o template da SBC e ser de até 10 páginas. 
 Template SBC: https://www.sbc.org.br/wpcontent/uploads/2024/07/modelosparapublicaodeartigos.zip
 - Código-fonte dos experimentos;
 
-## Entregas do projeto:
+### Entregas do projeto:
 
 - Título e resumo: 27/02/2026
 - Fundamentação teórica e proposta: 20/03/2026
 - Artigo completo e código-fonte dos experimentos: 14/04/2026
 
-## Alguns dos aspectos que serão avaliados no projeto são: 
+### Alguns dos aspectos que serão avaliados no projeto são: 
 - seguir template SBC corretamente,
 - limite de páginas, 
 - discussão de trabalhos relacionados, 
