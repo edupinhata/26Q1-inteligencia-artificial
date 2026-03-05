@@ -33,15 +33,15 @@ Introdução aos conceitos de IA.
 
 ## Course Plan
 
-- [ ] 02/02: Apresentação da disciplina, fundamentos da inteligência artificial
-- [ ] 05/02: Arquitetura de agentes inteligentes, métodos de busca sem informação, heurística e gulaso, busca local
-- [ ] 09/05: Introdução a algoritmos evolutivos
-- [ ] 12/02: Introdução a algoritmos evolutivos, jogos adversariais
-- [ ] 19/02: Jogos adversariais
-- [ ] 23/02: Aprendizado de máquina
-- [ ] 26/02: Aprendizado supervisionado
-- [ ] 02/03: Aprendizado supervisionado
-- [ ] 05/03: Aprendizado de máquina, redes de crença
+- [x] 02/02: Apresentação da disciplina, fundamentos da inteligência artificial
+- [x] 05/02: Arquitetura de agentes inteligentes, métodos de busca sem informação, heurística e gulaso, busca local
+- [x] 09/05: Introdução a algoritmos evolutivos
+- [x] 12/02: Introdução a algoritmos evolutivos, jogos adversariais
+- [x] 19/02: Jogos adversariais
+- [x] 23/02: Aprendizado de máquina
+- [x] 26/02: Aprendizado supervisionado
+- [x] 02/03: Aprendizado supervisionado
+- [x] 05/03: Aprendizado de máquina, redes de crença
 - [ ] 09/03: Revisão
 - [ ] 12/03: Avaliação P1
 - [ ] 16/03: Redes neurais artificiais
