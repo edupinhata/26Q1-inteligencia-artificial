@@ -6,17 +6,10 @@
 - [Course Plan](#course-plan)
 - [Projeto](#projeto)
 
+## Assignments
 
-## Aulas
-
-### Aula 1
-
-Introdução aos conceitos de IA.
-
-### Aula 2
-
-- Nas funções gulosas, verificar o que é o f(x) e o g(x) (estimativa vs real) -> não lembro se é respectivamente, mas dá para 
-
+Resumo do artigo "On responsible machine learning datasets emphasizing fairness, privacy and regulatory norms with examples in biometrics and healthcare"
+- [v1](./assignments/Resumo%20-%20On%20responsible%20machine%20learning%20datasets%20emphasizing%20fairness_v1.pdf)
 
 
 ## Course Info
@@ -42,14 +35,14 @@ Introdução aos conceitos de IA.
 - [x] 26/02: Aprendizado supervisionado
 - [x] 02/03: Aprendizado supervisionado
 - [x] 05/03: Aprendizado de máquina, redes de crença
-- [ ] 09/03: Revisão
-- [ ] 12/03: Avaliação P1
-- [ ] 16/03: Redes neurais artificiais
-- [ ] 19/03: Redes neurais artificiais
-- [ ] 23/03: Aprendizado profundo
-- [ ] 26/03: Comunicação e percepção
-- [ ] 30/03: Comunicação e percepção
-- [ ] 02/04: IA generativa, Transformers
+- [x] 09/03: Revisão
+- [x] 12/03: Avaliação P1
+- [x] 16/03: Redes neurais artificiais
+- [x] 19/03: Redes neurais artificiais
+- [x] 23/03: Aprendizado profundo
+- [x] 26/03: Comunicação e percepção
+- [x] 30/03: Comunicação e percepção
+- [x] 02/04: IA generativa, Transformers
 - [ ] 06/04: Aprendizado por reforço
 - [ ] 09/04: Aprendizado por reforço
 - [ ] 13/04: Revisão
