@@ -8,20 +8,19 @@ class ArmsTrainingData:
         self.arm = arm
         self.userFeatures = []
         self.clicks = []
-        self.alreadySimulated = 0
+        # estimated reward for the arm, that will be used to select the arm
+        # in the next iteration. 
+        # It will be updated after each iteration with the new estimated reward.
+        self.p = [] 
+
 
     def addSimulationData(self, userFeatures, clicked):
         self.userFeatures.append(userFeatures)
         self.clicks.append(clicked)
+        self.p.append(0)
 
-    def getNextSimulation(self):
-        simulationNumber = self.alreadySimulated
-        features = self.userFeatures[simulationNumber], self.clicks[simulationNumber]
-        self.alreadySimulated+=1
-        return features
-
-    def canTrain(self):
-        return self.alreadySimulated < len(self.userFeatures)
+    def x(self, user):
+        return np.concatenate((self.arm.arm_features, self.userFeatures[user]))
 
 class LinUCBArm:
     # In the context of article recommendation, articles in the pool are arms
@@ -36,6 +35,7 @@ class LinUCBArm:
 
         self.choosenAmount = 0
         
+
     def setA(self, A):
         self.A = A
         self.A_inv = np.linalg.inv(A)
@@ -48,7 +48,7 @@ class LinUCBArm:
         theta_T = self.thetha().T
 
         exploit = theta_T @ x_a
-        explore = alpha * np.sqrt(self.arm_features @ self.A_inv @ self.arm_features)
+        explore = alpha * np.sqrt(x_a.T @ self.A_inv @ x_a)
 
         return exploit + explore
         
@@ -56,10 +56,11 @@ class LinUCBArm:
         return hash(tuple(self.arm_features))
 
 class LinUCB:
-    def __init__(self):
+    def __init__(self, alpha):
         # The vector x_{t,a} summarizes information of both the user 
         # u_t and arm a_t
         self.simulationArms = {}
+        self.alpha = alpha
 
         # Initialize arms
         data = processData.ArticlesSelectionDataframe()
@@ -78,19 +79,55 @@ class LinUCB:
     def update(self):
         # Algorithm improves its arm-selection strategy with new observation
         # (X_{t,a_t}, a_t, r_{t,a_t})
-        for trial in range(100):
-            for i in range(len(self.Arms)):
-                arm = self.Arms[i]
-                # if arm is new
+        p_max = 0
+        u_max = 0
 
-                p = true_theta @ arm.arm_features + np.sqrt(arm.arm_features @ A_inv @ arm.arm_features)
-                arm.choosenAmount+=1
-            pass
+        for a in self.simulationArms.keys():
+            arm = self.simulationArms[a].arm
+            user_features = self.simulationArms[a].userFeatures
+            clicks = self.simulationArms[a].clicks
 
+            for u in range(len(user_features)):
+                p =  arm.score_p(self.alpha, user_features[u])
+                self.simulationArms[a].p[u] = p
+                if (p > p_max):
+                    p_max = p
+                    u_max = u
+
+            x_t_a = self.simulationArms[a].x(u_max)
+            reward = clicks[u_max]
+
+            arm.setA(arm.A + x_t_a @ x_t_a.T)
+            arm.b += reward * x_t_a
+
+            arm.choosenAmount+=1
+
+    def fit(self, iterations):
+        print("Training started...")
+        for i in range(iterations):
+            print(f"Iteration {i+1}/{iterations}\t")
+            self.update()
+        print("Training finished.")
+
+    def checkResult(self):
+        right = 0
+        tries = 0
+
+        for a in self.simulationArms.keys():
+            armSimulation = self.simulationArms[a]
+            user_features = armSimulation.userFeatures
+            clicks = armSimulation.clicks
+
+            for u in range(len(user_features)):
+                p =  armSimulation.p[u]
+                if (p > 0.5 and clicks[u] == 1):
+                    right += 1
+                elif (p <= 0.5 and clicks[u] == 0):
+                    right += 1
+                tries += 1
+
+        print(f"Accuracy: {right/tries}")
         
-        
-    def selectArm(self):
-        # No feedback (payoff) is observed for unchosen arms a != a_t
-        payoff_r = 0
-        return payoff_r
-
+linUCB = LinUCB(alpha=0.7)        
+linUCB.fit(iterations=100)
+linUCB.checkResult()
