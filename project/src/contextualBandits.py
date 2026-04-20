@@ -1,89 +1,96 @@
 import numpy as np
+import processData as processData
 
+# Each arm, that represents an article, will have a list of user features and clicks that will be used to train the algorithm.
+# This class is used to store the data that will be used to train the algorithm. It will be used to simulate the environment and provide feedback to the algorithm.
+class ArmsTrainingData:
+    def __init__(self, arm):
+        self.arm = arm
+        self.userFeatures = []
+        self.clicks = []
+        self.alreadySimulated = 0
+
+    def addSimulationData(self, userFeatures, clicked):
+        self.userFeatures.append(userFeatures)
+        self.clicks.append(clicked)
+
+    def getNextSimulation(self):
+        simulationNumber = self.alreadySimulated
+        features = self.userFeatures[simulationNumber], self.clicks[simulationNumber]
+        self.alreadySimulated+=1
+        return features
+
+    def canTrain(self):
+        return self.alreadySimulated < len(self.userFeatures)
 
 class LinUCBArm:
-    def __init__(self, d: int):
-        self.d = d
-        self.A = np.eye(d)          # matriz d x d
-        self.b = np.zeros(d)        # vetor d
+    # In the context of article recommendation, articles in the pool are arms
 
-    def theta(self) -> np.ndarray:
-        return np.linalg.solve(self.A, self.b)
+    def __init__(self, arm_features, user_features_length):
+        self.d = len(arm_features) + user_features_length
+        self.arm_features = arm_features
 
-    def score(self, x: np.ndarray, alpha: float) -> float:
-        A_inv = np.linalg.inv(self.A)
-        theta_hat = self.theta()
+        self.A = np.eye(self.d)          # matriz d x d
+        self.A_inv = np.eye(self.d)      # matriz d x d (inversa de A)
+        self.b = np.zeros(self.d)        # vetor d
 
-        exploit = theta_hat @ x
-        explore = alpha * np.sqrt(x @ A_inv @ x)
+        self.choosenAmount = 0
+        
+    def setA(self, A):
+        self.A = A
+        self.A_inv = np.linalg.inv(A)
+
+    def thetha(self):
+        return self.A_inv @ self.b
+
+    def score_p(self, alpha, user_features):
+        x_a = np.concatenate((self.arm_features, user_features))
+        theta_T = self.thetha().T
+
+        exploit = theta_T @ x_a
+        explore = alpha * np.sqrt(self.arm_features @ self.A_inv @ self.arm_features)
 
         return exploit + explore
-
-    def update(self, x: np.ndarray, reward: float) -> None:
-        self.A += np.outer(x, x)
-        self.b += reward * x
-
+        
+    def getUniqueArmIdentification(self):
+        return hash(tuple(self.arm_features))
 
 class LinUCB:
-    def __init__(self, n_arms: int, d: int, alpha: float = 1.0):
-        self.n_arms = n_arms
-        self.d = d
-        self.alpha = alpha
-        self.arms = [LinUCBArm(d) for _ in range(n_arms)]
+    def __init__(self):
+        # The vector x_{t,a} summarizes information of both the user 
+        # u_t and arm a_t
+        self.simulationArms = {}
 
-    def select_arm(self, x: np.ndarray) -> int:
-        scores = [arm.score(x, self.alpha) for arm in self.arms]
-        return int(np.argmax(scores))
+        # Initialize arms
+        data = processData.ArticlesSelectionDataframe()
+        for i in range(len(data.allDataframe)):
+            arm_features = data.newsDataframe.iloc[i].values
+            user_features = data.userDataframe.iloc[i].values
+            click = data.clicks.iloc[i]
 
-    def update(self, arm_index: int, x: np.ndarray, reward: float) -> None:
-        self.arms[arm_index].update(x, reward)
+            arm = LinUCBArm(arm_features, len(user_features))
+            armHash = arm.getUniqueArmIdentification()
+            if armHash not in self.simulationArms:
+                self.simulationArms[armHash] = ArmsTrainingData(arm)
+            self.simulationArms[armHash].addSimulationData(user_features, click)
+        
+        
+    def update(self):
+        # Algorithm improves its arm-selection strategy with new observation
+        # (X_{t,a_t}, a_t, r_{t,a_t})
+        for trial in range(100):
+            for i in range(len(self.Arms)):
+                arm = self.Arms[i]
+                # if arm is new
 
+                p = true_theta @ arm.arm_features + np.sqrt(arm.arm_features @ A_inv @ arm.arm_features)
+                arm.choosenAmount+=1
+            pass
 
-def sigmoid(z: float) -> float:
-    return 1.0 / (1.0 + np.exp(-z))
+        
+        
+    def selectArm(self):
+        # No feedback (payoff) is observed for unchosen arms a != a_t
+        payoff_r = 0
+        return payoff_r
 
-
-if __name__ == "__main__":
-    np.random.seed(42)
-
-    d = 3
-    n_arms = 2
-    alpha = 0.7
-    T = 100
-
-    agent = LinUCB(n_arms=n_arms, d=d, alpha=alpha)
-
-    # "Mundo real" escondido: cada braço tem um vetor verdadeiro
-    true_theta = [
-        np.array([0.9, 0.2, -0.1]),
-        np.array([0.3, 0.8,  0.4])
-    ]
-
-    total_reward = 0.0
-
-    for t in range(1, T + 1):
-        # contexto atual
-        x = np.random.rand(d)
-
-        # escolhe ação
-        chosen_arm = agent.select_arm(x)
-
-        # gera recompensa binária simulada
-        expected_reward = true_theta[chosen_arm] @ x
-        click_prob = sigmoid(expected_reward)
-        reward = 1.0 if np.random.rand() < click_prob else 0.0
-
-        # atualiza
-        agent.update(chosen_arm, x, reward)
-        total_reward += reward
-
-        print(
-            f"t={t:03d} | x={np.round(x, 3)} | "
-            f"arm={chosen_arm} | reward={reward:.0f}"
-        )
-
-    print("\nParâmetros aprendidos:")
-    for i, arm in enumerate(agent.arms):
-        print(f"Braço {i}: theta_hat = {np.round(arm.theta(), 4)}")
-
-    print(f"\nRecompensa total: {total_reward}")
